@@ -23,44 +23,17 @@ logging.basicConfig(level=logging.INFO)
 log = logging.getLogger(__name__)
 
 # Paths
-PROJECT_FILE = "test_project.dbpr"
-TEMPLATE_FILE = "templates.r2t"
+PROJECT_FILE = "monitor_flipflop.dbpr"
 
-# Ensure project file exists
-if not os.path.exists(PROJECT_FILE):
-    print(f"❌ Error: Project file '{PROJECT_FILE}' not found.")
-    sys.exit(1)
-
-print(f"📂 Loading project: {PROJECT_FILE}")
+# Load the project file AFTER importing
 projFile = r1.ProjectFile(PROJECT_FILE)
 
-# Ensure template file exists
-if not os.path.exists(TEMPLATE_FILE):
-    print(f"❌ Error: Template file '{TEMPLATE_FILE}' not found.")
-    sys.exit(1)
-
-print(f"📂 Checking template file: {TEMPLATE_FILE}")
-tempFile = autor1.TemplateFile(TEMPLATE_FILE)
-print(f"✅ Successfully loaded template file: {TEMPLATE_FILE}")
-
-# Processing
-print("🛠 Starting project processing...")
-
 try:
+    # Clean up existing AutoR1 data
     autor1.clean(projFile)
 
-    projFile.pId = projFile.createGrp(autor1.PARENT_GROUP_TITLE, 1)
-    autor1.createSubLRCGroups(projFile)
-    autor1.getSrcGrpInfo(projFile)
-    autor1.configureApChannels(projFile)
-
-    # Create Show Page View
-    autor1.createShowPageView(projFile)
-
-    # Create other views
-    autor1.createMeterView(projFile, tempFile)
-    autor1.createMasterView(projFile, tempFile)
-    autor1.createNavButtons(projFile, tempFile)
+    # Create Show Page View only
+    autor1.create_show_page(projFile)
 
     print(f"✅ Finished processing project: {PROJECT_FILE}")
 
